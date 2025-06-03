@@ -18,24 +18,23 @@ try {
     $jamus = \App\Models\Jamu::limit(2)->get();
     $weights = [
         'kandungan' => 0.3,
-        'khasiat' => 0.25, 
+        'khasiat' => 0.25,
         'harga' => 0.25,
         'expired' => 0.2
     ];
-    
+
     $results = $service->calculateSmart($jamus, $weights);
     echo "   ✓ SMART calculation successful: " . count($results) . " results\n";
-    
+
     // Check structure
     $first = $results[0];
     echo "   ✓ First result keys: " . implode(', ', array_keys($first)) . "\n";
-    
+
     if (isset($first['normalized_scores'])) {
         $scores = $first['normalized_scores'];
         echo "   ✓ Normalized scores keys: " . implode(', ', array_keys($scores)) . "\n";
         echo "   ✓ Kandungan score: " . number_format($scores['kandungan'] * 100, 1) . "%\n";
     }
-    
 } catch (Exception $e) {
     echo "   ✗ SMART test failed: " . $e->getMessage() . "\n";
 }
@@ -43,15 +42,14 @@ try {
 // Test 3: Test Article logic
 echo "\n3. Testing Article Logic...\n";
 try {
-    $featuredArticle = \App\Models\Article::where('is_featured', true)->first() ?? 
-                      \App\Models\Article::latest()->first();
-    
+    $featuredArticle = \App\Models\Article::where('is_featured', true)->first() ??
+        \App\Models\Article::latest()->first();
+
     if ($featuredArticle) {
         echo "   ✓ Featured article found: " . $featuredArticle->title . "\n";
     } else {
         echo "   ✗ No featured article found\n";
     }
-    
 } catch (Exception $e) {
     echo "   ✗ Article test failed: " . $e->getMessage() . "\n";
 }

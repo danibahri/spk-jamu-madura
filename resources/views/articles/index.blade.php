@@ -220,9 +220,10 @@
                             <i class="fas fa-tags me-2"></i>
                             Kategori
                         </h5>
-                    </div>                    <div class="card-body">
+                    </div>
+                    <div class="card-body">
                         <div class="list-group list-group-flush">
-                            @if(!empty($categoriesWithCount))
+                            @if (!empty($categoriesWithCount))
                                 @foreach ($categoriesWithCount as $category => $count)
                                     <a href="{{ route('articles.index', ['category' => $category]) }}"
                                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-0">

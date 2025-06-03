@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test script to verify the fixes for SPK Jamu system
  * Tests both critical errors that were reported:
@@ -18,10 +19,10 @@ echo "=== SPK JAMU FIX VERIFICATION TEST ===\n\n";
 echo "1. Testing SMART Algorithm Service...\n";
 try {
     $smartService = new SmartAlgorithmService();
-    
+
     // Get sample jamu data
     $jamus = Jamu::limit(5)->get();
-    
+
     // Test weights (as percentages, should be normalized)
     $weights = [
         'kandungan' => 30,  // 30%
@@ -29,7 +30,7 @@ try {
         'harga' => 25,      // 25%
         'expired' => 20     // 20%
     ];
-    
+
     // Convert to normalized weights (0-1 scale)
     $normalizedWeights = [
         'kandungan' => $weights['kandungan'] / 100,
@@ -37,20 +38,22 @@ try {
         'harga' => $weights['harga'] / 100,
         'expired' => $weights['expired'] / 100
     ];
-    
+
     $results = $smartService->calculateSmart($jamus, $normalizedWeights);
-    
+
     echo "   ✓ SMART calculation successful\n";
     echo "   ✓ Results count: " . count($results) . "\n";
-    
+
     // Test the specific structure that was causing the error
     foreach ($results as $index => $item) {
         if (isset($item['normalized_scores'])) {
             $scores = $item['normalized_scores'];
-            if (isset($scores['kandungan']) && isset($scores['khasiat']) && 
-                isset($scores['harga']) && isset($scores['expired'])) {
+            if (
+                isset($scores['kandungan']) && isset($scores['khasiat']) &&
+                isset($scores['harga']) && isset($scores['expired'])
+            ) {
                 echo "   ✓ Item $index: normalized_scores structure is correct\n";
-                
+
                 // Verify the scores are numeric and in valid range
                 foreach (['kandungan', 'khasiat', 'harga', 'expired'] as $criterion) {
                     $score = $scores[$criterion];
@@ -68,7 +71,6 @@ try {
             echo "   ✗ Item $index: missing normalized_scores array\n";
         }
     }
-    
 } catch (Exception $e) {
     echo "   ✗ SMART Algorithm test failed: " . $e->getMessage() . "\n";
 }
@@ -79,20 +81,20 @@ echo "\n";
 echo "2. Testing Article Controller Logic...\n";
 try {
     // Test the logic that was in ArticleController
-    
+
     // Test getting featured article (should not be null)
     $featuredArticle = Article::where('is_featured', true)->first() ?? Article::latest()->first();
-    
+
     if ($featuredArticle) {
         echo "   ✓ Featured article found: " . $featuredArticle->title . "\n";
     } else {
         echo "   ✗ No featured article found\n";
     }
-    
+
     // Test getting articles for index
     $articles = Article::latest()->take(6)->get();
     echo "   ✓ Articles for index: " . $articles->count() . " found\n";
-    
+
     // Test getting article by slug
     $sampleArticle = Article::first();
     if ($sampleArticle) {
@@ -103,11 +105,10 @@ try {
             echo "   ✗ Article by slug not found\n";
         }
     }
-    
+
     // Test category filtering
     $categories = Article::distinct()->pluck('category')->filter();
     echo "   ✓ Article categories: " . $categories->count() . " found\n";
-    
 } catch (Exception $e) {
     echo "   ✗ Article Controller test failed: " . $e->getMessage() . "\n";
 }
@@ -121,7 +122,7 @@ try {
     $formData = [
         'weights' => [
             'kandungan' => '30',
-            'khasiat' => '25', 
+            'khasiat' => '25',
             'harga' => '25',
             'expired' => '20'
         ],
@@ -130,17 +131,17 @@ try {
             'max_price' => '100000'
         ]
     ];
-    
+
     // Test validation rules (like in SmartController)
     $weights = $formData['weights'];
     $total = array_sum($weights);
-    
+
     if ($total == 100) {
         echo "   ✓ Weight validation: Total is exactly 100%\n";
     } else {
         echo "   ✗ Weight validation: Total is $total% (should be 100%)\n";
     }
-    
+
     // Test individual weight ranges
     foreach ($weights as $criterion => $weight) {
         if ($weight >= 0 && $weight <= 100) {
@@ -149,7 +150,6 @@ try {
             echo "   ✗ $criterion weight ($weight%) is out of range\n";
         }
     }
-    
 } catch (Exception $e) {
     echo "   ✗ Form data processing test failed: " . $e->getMessage() . "\n";
 }

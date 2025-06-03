@@ -15,7 +15,7 @@ class HomeController extends Controller
         $categories = Jamu::distinct('kategori')->pluck('kategori')->filter()->values();
 
         $recentArticles = Article::latest()->limit(3)->get();
-        
+
         // Get featured article (latest published article)
         $featuredArticle = Article::latest()->first();
 

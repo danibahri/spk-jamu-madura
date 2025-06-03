@@ -44,7 +44,7 @@
                                         <div class="mb-3">
                                             <label for="kandungan_weight" class="form-label fw-bold">
                                                 Bobot: <span id="kandungan_value">25</span>%
-                                            </label>                                            <input type="range" class="form-range" id="kandungan_weight"
+                                            </label> <input type="range" class="form-range" id="kandungan_weight"
                                                 name="weights[kandungan]" min="0" max="100" value="25"
                                                 oninput="updateValue('kandungan', this.value)">
                                         </div>
@@ -64,7 +64,7 @@
                                         <div class="mb-3">
                                             <label for="khasiat_weight" class="form-label fw-bold">
                                                 Bobot: <span id="khasiat_value">30</span>%
-                                            </label>                                            <input type="range" class="form-range" id="khasiat_weight"
+                                            </label> <input type="range" class="form-range" id="khasiat_weight"
                                                 name="weights[khasiat]" min="0" max="100" value="30"
                                                 oninput="updateValue('khasiat', this.value)">
                                         </div>
@@ -84,8 +84,8 @@
                                         <div class="mb-3">
                                             <label for="harga_weight" class="form-label fw-bold">
                                                 Bobot: <span id="harga_value">20</span>%
-                                            </label>                                            <input type="range" class="form-range" id="harga_weight" name="weights[harga]"
-                                                min="0" max="100" value="20"
+                                            </label> <input type="range" class="form-range" id="harga_weight"
+                                                name="weights[harga]" min="0" max="100" value="20"
                                                 oninput="updateValue('harga', this.value)">
                                         </div>
                                     </div>
@@ -104,7 +104,7 @@
                                         <div class="mb-3">
                                             <label for="expired_weight" class="form-label fw-bold">
                                                 Bobot: <span id="expired_value">25</span>%
-                                            </label>                                            <input type="range" class="form-range" id="expired_weight"
+                                            </label> <input type="range" class="form-range" id="expired_weight"
                                                 name="weights[expired]" min="0" max="100" value="25"
                                                 oninput="updateValue('expired', this.value)">
                                         </div>
@@ -117,7 +117,8 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="kategori" class="form-label fw-bold">Kategori Jamu</label>                                    <select class="form-select" id="kategori" name="filters[category]">
+                                    <label for="kategori" class="form-label fw-bold">Kategori Jamu</label> <select
+                                        class="form-select" id="kategori" name="filters[category]">
                                         <option value="">Semua Kategori</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category }}">{{ $category }}</option>

@@ -9,8 +9,10 @@
             <h2 class="display-5 fw-bold text-success mb-3">
                 <i class="fas fa-star me-3"></i>
                 Rekomendasi Jamu Untuk Anda
-            </h2>            <p class="lead text-muted">
-                Berdasarkan kriteria yang Anda tentukan, berikut adalah {{ !empty($results) ? count($results) : 0 }} jamu terbaik
+            </h2>
+            <p class="lead text-muted">
+                Berdasarkan kriteria yang Anda tentukan, berikut adalah {{ !empty($results) ? count($results) : 0 }} jamu
+                terbaik
             </p>
         </div>
 
@@ -108,7 +110,7 @@
                                             @endif
                                         </div>
 
-                                        <p class="card-text text-muted mb-2">                                            <strong>Kandungan:</strong>
+                                        <p class="card-text text-muted mb-2"> <strong>Kandungan:</strong>
                                             {{ implode(', ', array_slice($item['jamu']->kandungan_array, 0, 3)) }}
                                             @if (!empty($item['jamu']->kandungan_array) && count($item['jamu']->kandungan_array) > 3)
                                                 <span class="text-info">+{{ count($item['jamu']->kandungan_array) - 3 }}
@@ -149,28 +151,36 @@
                                                 <div class="col-6 mb-2">
                                                     <small class="text-muted">Kandungan</small>
                                                     <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-primary"                                                            style="width: {{ $item['normalized_scores']['kandungan'] * 100 }}%"></div>
+                                                        <div class="progress-bar bg-primary"
+                                                            style="width: {{ $item['normalized_scores']['kandungan'] * 100 }}%">
+                                                        </div>
                                                     </div>
                                                     <small>{{ number_format($item['normalized_scores']['kandungan'] * 100, 0) }}%</small>
                                                 </div>
                                                 <div class="col-6 mb-2">
                                                     <small class="text-muted">Khasiat</small>
                                                     <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-danger"                                                            style="width: {{ $item['normalized_scores']['khasiat'] * 100 }}%"></div>
+                                                        <div class="progress-bar bg-danger"
+                                                            style="width: {{ $item['normalized_scores']['khasiat'] * 100 }}%">
+                                                        </div>
                                                     </div>
                                                     <small>{{ number_format($item['normalized_scores']['khasiat'] * 100, 0) }}%</small>
                                                 </div>
                                                 <div class="col-6 mb-2">
                                                     <small class="text-muted">Harga</small>
                                                     <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-success"                                                            style="width: {{ $item['normalized_scores']['harga'] * 100 }}%"></div>
+                                                        <div class="progress-bar bg-success"
+                                                            style="width: {{ $item['normalized_scores']['harga'] * 100 }}%">
+                                                        </div>
                                                     </div>
                                                     <small>{{ number_format($item['normalized_scores']['harga'] * 100, 0) }}%</small>
                                                 </div>
                                                 <div class="col-6 mb-2">
                                                     <small class="text-muted">Freshness</small>
                                                     <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-warning"                                                            style="width: {{ $item['normalized_scores']['expired'] * 100 }}%"></div>
+                                                        <div class="progress-bar bg-warning"
+                                                            style="width: {{ $item['normalized_scores']['expired'] * 100 }}%">
+                                                        </div>
                                                     </div>
                                                     <small>{{ number_format($item['normalized_scores']['expired'] * 100, 0) }}%</small>
                                                 </div>
@@ -208,7 +218,7 @@
                         </div>
                     </div>
                 @endforeach
-            </div>            <!-- Pagination if needed -->
+            </div> <!-- Pagination if needed -->
             @if (!empty($results) && count($results) > 10)
                 <div class="d-flex justify-content-center mt-4">
                     <nav>

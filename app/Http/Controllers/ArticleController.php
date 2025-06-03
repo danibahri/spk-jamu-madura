@@ -26,17 +26,17 @@ class ArticleController extends Controller
 
         $articles = $query->orderBy('created_at', 'desc')->paginate(9);
         $categories = Article::distinct('category')->pluck('category')->filter();
-        
+
         // Get categories with count for sidebar
         $categoriesWithCount = Article::where('is_published', true)
             ->selectRaw('category, count(*) as count')
             ->groupBy('category')
             ->pluck('count', 'category')
             ->toArray();
-        
+
         // Get featured article
         $featuredArticle = Article::where('is_published', true)->latest()->first();
-        
+
         // Get popular articles (most viewed or latest)
         $popularArticles = Article::where('is_published', true)
             ->orderBy('created_at', 'desc')
@@ -58,7 +58,7 @@ class ArticleController extends Controller
             ->where('id', '!=', $article->id)
             ->limit(3)
             ->get();
-            
+
         // Get popular articles (most viewed or latest)
         $popularArticles = Article::where('is_published', true)
             ->orderBy('created_at', 'desc')
@@ -76,10 +76,10 @@ class ArticleController extends Controller
             ->paginate(9);
 
         $categories = Article::distinct('category')->pluck('category')->filter();
-        
+
         // Get featured article
         $featuredArticle = Article::where('is_published', true)->latest()->first();
-        
+
         // Get popular articles (most viewed or latest)
         $popularArticles = Article::where('is_published', true)
             ->orderBy('created_at', 'desc')

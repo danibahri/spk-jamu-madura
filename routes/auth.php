@@ -44,7 +44,7 @@ Route::post('/register', function (Illuminate\Http\Request $request) {
     ]);
 
     Auth::login($user);
-    
+
     alert()->success('Pendaftaran Berhasil!', 'Selamat datang ' . $user->name . '! Akun Anda telah berhasil dibuat.');
     return redirect('/');
 })->name('register.store');
@@ -53,7 +53,7 @@ Route::post('/logout', function (Illuminate\Http\Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    
+
     alert()->success('Logout Berhasil', 'Terima kasih telah menggunakan SPK Jamu Madura. Sampai jumpa!');
     return redirect('/');
 })->name('logout');

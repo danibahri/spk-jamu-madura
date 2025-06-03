@@ -48,7 +48,8 @@ class SmartAlgorithmService
         );
 
         return round($totalScore, 4);
-    }    /**
+    }
+    /**
      * Get normalized scores for each criteria
      */
     public function getNormalizedScores($jamu, $weights)
@@ -162,7 +163,8 @@ class SmartAlgorithmService
             'harga' => 0.20,
             'expired' => 0.25
         ];
-    }    /**
+    }
+    /**
      * Validate weights (must sum to 1.0)
      */
     public function validateWeights($weights)
@@ -177,10 +179,10 @@ class SmartAlgorithmService
     public function normalizeWeights($weights)
     {
         // Convert percentage values (0-100) to decimal (0-1)
-        $weights = array_map(function($weight) {
+        $weights = array_map(function ($weight) {
             return $weight / 100;
         }, $weights);
-        
+
         $sum = array_sum($weights);
 
         if ($sum == 0) {
