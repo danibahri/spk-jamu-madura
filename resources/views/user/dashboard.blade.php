@@ -21,15 +21,13 @@
                     Cari Jamu Sekarang
                 </a>
             </div>
-        </div>
-
-        <!-- Stats Cards -->
+        </div> <!-- Stats Cards -->
         <div class="row mb-5">
             <div class="col-md-3 mb-4">
                 <div class="card bg-primary text-white shadow">
                     <div class="card-body text-center">
                         <i class="fas fa-heart fa-2x mb-3"></i>
-                        <h3 class="mb-1">{{ $stats['favorites'] }}</h3>
+                        <h3 class="mb-1">{{ $totalFavorites }}</h3>
                         <p class="mb-0">Jamu Favorit</p>
                     </div>
                 </div>
@@ -38,7 +36,7 @@
                 <div class="card bg-success text-white shadow">
                     <div class="card-body text-center">
                         <i class="fas fa-history fa-2x mb-3"></i>
-                        <h3 class="mb-1">{{ $stats['searches'] }}</h3>
+                        <h3 class="mb-1">{{ $totalSearches }}</h3>
                         <p class="mb-0">Riwayat Pencarian</p>
                     </div>
                 </div>
@@ -47,7 +45,7 @@
                 <div class="card bg-info text-white shadow">
                     <div class="card-body text-center">
                         <i class="fas fa-sliders-h fa-2x mb-3"></i>
-                        <h3 class="mb-1">{{ $stats['preferences'] }}</h3>
+                        <h3 class="mb-1">{{ $userPreferences ? 'Ada' : 'Belum Ada' }}</h3>
                         <p class="mb-0">Preferensi Tersimpan</p>
                     </div>
                 </div>
@@ -56,8 +54,8 @@
                 <div class="card bg-warning text-white shadow">
                     <div class="card-body text-center">
                         <i class="fas fa-calendar-day fa-2x mb-3"></i>
-                        <h3 class="mb-1">{{ $stats['days_active'] }}</h3>
-                        <p class="mb-0">Hari Aktif</p>
+                        <h3 class="mb-1">{{ $user->created_at->diffInDays(now()) }}</h3>
+                        <p class="mb-0">Hari Bergabung</p>
                     </div>
                 </div>
             </div>
@@ -337,7 +335,7 @@
                                 if (data.success) {
                                     this.closest('.col-md-6').remove();
                                     showNotification('Berhasil dihapus dari favorit',
-                                    'success');
+                                        'success');
                                 }
                             })
                             .catch(error => {

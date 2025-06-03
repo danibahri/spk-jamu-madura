@@ -70,6 +70,23 @@ class UserPreferenceController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('preferences.history', compact('histories'));
+        return view('search-history.index', compact('histories'));
+    }
+
+    public function deleteHistory($id)
+    {
+        $history = Auth::user()->searchHistories()->findOrFail($id);
+        $history->delete();
+
+        return redirect()->route('search-history.index')
+            ->with('success', 'Riwayat pencarian berhasil dihapus!');
+    }
+
+    public function clearHistory()
+    {
+        Auth::user()->searchHistories()->delete();
+
+        return redirect()->route('search-history.index')
+            ->with('success', 'Semua riwayat pencarian berhasil dihapus!');
     }
 }

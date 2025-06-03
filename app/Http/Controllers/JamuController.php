@@ -22,12 +22,34 @@ class JamuController extends Controller
 
             // Save search history if user is logged in
             if (Auth::check()) {
-                SearchHistory::create([
-                    'user_id' => Auth::id(),
-                    'search_term' => $request->search,
-                    'filters' => json_encode($request->except(['_token', 'page'])),
-                    'results_count' => $query->count()
-                ]);
+                // Check for recent identical searches to avoid duplicates
+                $recentSearch = SearchHistory::where('user_id', Auth::id())
+                    ->where('search_query', $request->search)
+                    ->where('created_at', '>=', now()->subMinutes(10))
+                    ->first();
+
+                if (!$recentSearch) {
+                    // Get user preferences for criteria weights if available
+                    $preference = Auth::user()->preference;
+                    $criteriaWeights = null;
+
+                    if ($preference) {
+                        $criteriaWeights = [
+                            'kandungan' => $preference->weight_kandungan,
+                            'khasiat' => $preference->weight_khasiat,
+                            'harga' => $preference->weight_harga,
+                            'expired' => $preference->weight_expired
+                        ];
+                    }
+
+                    SearchHistory::create([
+                        'user_id' => Auth::id(),
+                        'search_query' => $request->search,
+                        'filters_applied' => json_encode($request->except(['_token', 'page'])),
+                        'criteria_weights' => $criteriaWeights ? json_encode($criteriaWeights) : null,
+                        'results' => null // Optional: store result IDs or count
+                    ]);
+                }
             }
         }
 

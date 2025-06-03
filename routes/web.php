@@ -7,6 +7,7 @@ use App\Http\Controllers\SmartController;
 use App\Http\Controllers\UserPreferenceController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminController;
 
 // Public routes
@@ -38,11 +39,20 @@ Route::prefix('articles')->name('articles.')->group(function () {
 
 // User authenticated routes
 Route::middleware('auth')->group(function () {
+    // User dashboard
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+
     // User preferences
     Route::prefix('preferences')->name('preferences.')->group(function () {
         Route::get('/', [UserPreferenceController::class, 'index'])->name('index');
         Route::post('/', [UserPreferenceController::class, 'store'])->name('store');
-        Route::get('/history', [UserPreferenceController::class, 'history'])->name('history');
+    });
+
+    // Search history
+    Route::prefix('search-history')->name('search-history.')->group(function () {
+        Route::get('/', [UserPreferenceController::class, 'history'])->name('index');
+        Route::delete('/{id}', [UserPreferenceController::class, 'deleteHistory'])->name('destroy');
+        Route::delete('/', [UserPreferenceController::class, 'clearHistory'])->name('clear');
     });
 
     // Favorites
@@ -50,6 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [FavoriteController::class, 'index'])->name('index');
         Route::post('/', [FavoriteController::class, 'store'])->name('store');
         Route::post('/toggle', [FavoriteController::class, 'toggle'])->name('toggle');
+        Route::post('/toggle/{jamuId}', [FavoriteController::class, 'toggle'])->name('toggle.id');
         Route::delete('/{jamuId}', [FavoriteController::class, 'destroy'])->name('destroy');
     });
 
@@ -60,7 +71,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin routes
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Jamu management

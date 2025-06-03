@@ -14,12 +14,50 @@ class FavoriteController extends Controller
         // Middleware will be handled by routes
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $favorites = Favorite::with('jamu')
-            ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $query = Favorite::with('jamu')
+            ->where('user_id', Auth::id());
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('jamu', function ($q) use ($search) {
+                $q->where('nama_jamu', 'like', "%{$search}%")
+                    ->orWhere('khasiat', 'like', "%{$search}%")
+                    ->orWhere('kandungan', 'like', "%{$search}%");
+            });
+        }
+
+        // Category filter
+        if ($request->filled('kategori')) {
+            $query->whereHas('jamu', function ($q) use ($request) {
+                $q->where('kategori', $request->kategori);
+            });
+        }
+
+        // Sorting
+        switch ($request->get('sort', 'newest')) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'name_asc':
+                $query->join('jamus', 'favorites.jamu_id', '=', 'jamus.id')
+                    ->orderBy('jamus.nama_jamu', 'asc')
+                    ->select('favorites.*');
+                break;
+            case 'name_desc':
+                $query->join('jamus', 'favorites.jamu_id', '=', 'jamus.id')
+                    ->orderBy('jamus.nama_jamu', 'desc')
+                    ->select('favorites.*');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $favorites = $query->paginate(9);
 
         return view('favorites.index', compact('favorites'));
     }
@@ -67,14 +105,29 @@ class FavoriteController extends Controller
         }
     }
 
-    public function toggle(Request $request)
+    public function toggle(Request $request, $jamuId = null)
     {
-        $request->validate([
-            'jamu_id' => 'required|exists:jamus,id'
-        ]);
+        // If jamuId is provided in the route, use it, otherwise get it from the request
+        $jamuId = $jamuId ?: $request->jamu_id;
+
+        if (!$jamuId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ID Jamu tidak ditemukan'
+            ], 400);
+        }
+
+        // Validate jamu exists
+        $jamu = Jamu::find($jamuId);
+        if (!$jamu) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jamu tidak ditemukan'
+            ], 404);
+        }
 
         $favorite = Favorite::where('user_id', Auth::id())
-            ->where('jamu_id', $request->jamu_id)
+            ->where('jamu_id', $jamuId)
             ->first();
 
         if ($favorite) {
@@ -86,7 +139,7 @@ class FavoriteController extends Controller
             // Add to favorites
             Favorite::create([
                 'user_id' => Auth::id(),
-                'jamu_id' => $request->jamu_id
+                'jamu_id' => $jamuId
             ]);
             $message = 'Jamu berhasil ditambahkan ke favorit';
             $action = 'added';

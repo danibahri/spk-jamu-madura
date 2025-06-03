@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -52,6 +53,11 @@ class User extends Authenticatable
         return $this->hasOne(UserPreference::class);
     }
 
+    public function preference()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
     public function searchHistories()
     {
         return $this->hasMany(SearchHistory::class);
@@ -70,5 +76,21 @@ class User extends Authenticatable
     public function favoriteJamus()
     {
         return $this->belongsToMany(Jamu::class, 'favorites');
+    }
+
+    // Role methods
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
+
+    public function hasRole($role)
+    {
+        return $this->role === $role;
     }
 }

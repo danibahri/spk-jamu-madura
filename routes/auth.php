@@ -41,6 +41,7 @@ Route::post('/register', function (Illuminate\Http\Request $request) {
         'name' => $request->name,
         'email' => $request->email,
         'password' => bcrypt($request->password),
+        'role' => 'user', // Default role untuk registrasi baru
     ]);
 
     Auth::login($user);

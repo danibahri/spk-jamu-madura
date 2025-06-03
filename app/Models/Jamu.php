@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Jamu extends Model
 {
@@ -119,5 +120,19 @@ class Jamu extends Model
         }
 
         return array_unique($kandunganArray);
+    }
+
+    /**
+     * Check if the current jamu is favorited by the authenticated user
+     *
+     * @return bool
+     */
+    public function isFavorited(): bool
+    {
+        if (!Auth::check()) {
+            return false;
+        }
+
+        return $this->favorites()->where('user_id', Auth::id())->exists();
     }
 }

@@ -328,13 +328,38 @@
                 alert('Pilih minimal 2 jamu untuk dibandingkan');
                 return;
             }
-            if (selected.length > 5) {
-                alert('Maksimal 5 jamu dapat dibandingkan');
+            if (selected.length > 4) {
+                alert('Maksimal 4 jamu dapat dibandingkan');
                 return;
             }
 
             const ids = Array.from(selected).map(cb => cb.value);
-            window.open(`{{ route('jamu.compare') }}?ids=${ids.join(',')}`, '_blank');
+
+            // Create a form to submit to smart.compare route with POST method
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route('smart.compare') }}';
+            form.target = '_blank';
+
+            // Add CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]').content;
+            form.appendChild(csrfInput);
+
+            // Add jamu IDs
+            ids.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'jamus[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
         }
 
         // Favorite functionality

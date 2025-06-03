@@ -5,13 +5,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>@yield('title', 'SPK Jamu Madura')</title>
-
-        <!-- Bootstrap CSS -->
+        <title>@yield('title', 'SPK Jamu Madura')</title> <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <!-- Custom CSS -->
+        <link rel="stylesheet" href="{{ asset('css/favorites.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/jamu-cards.css') }}">
         <style>
             .navbar-brand {
                 font-weight: bold;
@@ -78,12 +78,11 @@
         @stack('styles')
     </head>
 
-    <body>
-        <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <body> <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    <i class="fas fa-leaf me-2"></i>SPK Jamu Madura
+                    <i class="fas fa-leaf text-success me-2"></i><span class="text-success">SPK</span> Jamu Madura
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -93,23 +92,27 @@
                 <div class="navbar-collapse collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">
-                                <i class="fas fa-home me-1"></i>Beranda
+                            <a class="nav-link {{ request()->routeIs('home') ? 'active fw-bold' : '' }}"
+                                href="{{ route('home') }}">
+                                <i class="fas fa-home text-secondary me-1"></i>Beranda
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('jamu.index') }}">
-                                <i class="fas fa-pills me-1"></i>Jamu
+                            <a class="nav-link {{ request()->routeIs('jamu.*') ? 'active fw-bold' : '' }}"
+                                href="{{ route('jamu.index') }}">
+                                <i class="fas fa-pills text-success me-1"></i>Jamu
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('smart.index') }}">
-                                <i class="fas fa-calculator me-1"></i>Rekomendasi SMART
+                            <a class="nav-link {{ request()->routeIs('smart.*') ? 'active fw-bold' : '' }}"
+                                href="{{ route('smart.index') }}">
+                                <i class="fas fa-calculator text-primary me-1"></i>Rekomendasi SMART
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('articles.index') }}">
-                                <i class="fas fa-newspaper me-1"></i>Artikel
+                            <a class="nav-link {{ request()->routeIs('articles.*') ? 'active fw-bold' : '' }}"
+                                href="{{ route('articles.index') }}">
+                                <i class="fas fa-newspaper text-info me-1"></i>Artikel
                             </a>
                         </li>
                     </ul>
@@ -121,30 +124,32 @@
                                     data-bs-toggle="dropdown">
                                     <i class="fas fa-user me-1"></i>{{ Auth::user()->name }}
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" href="{{ route('preferences.index') }}">
                                             <i class="fas fa-cog me-2"></i>Preferensi
                                         </a></li>
                                     <li><a class="dropdown-item" href="{{ route('favorites.index') }}">
-                                            <i class="fas fa-heart me-2"></i>Favorit
+                                            <i class="fas fa-heart text-danger me-2"></i>Favorit
                                         </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('preferences.history') }}">
-                                            <i class="fas fa-history me-2"></i>Riwayat
-                                        </a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                            <i class="fas fa-tachometer-alt me-2"></i>Admin Panel
+                                    <li><a class="dropdown-item" href="{{ route('search-history.index') }}">
+                                            <i class="fas fa-history text-info me-2"></i>Riwayat Pencarian
                                         </a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
+                                    @if (Auth::user()->role === 'admin')
+                                        <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                                <i class="fas fa-tachometer-alt text-primary me-2"></i>Admin Panel
+                                            </a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                    @endif
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                                <i class="fas fa-sign-out-alt text-secondary me-2"></i>Logout
                                             </button>
                                         </form>
                                     </li>
@@ -252,6 +257,9 @@
 
         <!-- SweetAlert2 CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- Custom Scripts -->
+        <script src="{{ asset('js/favorites.js') }}"></script>
 
         <script>
             // CSRF Token setup for AJAX

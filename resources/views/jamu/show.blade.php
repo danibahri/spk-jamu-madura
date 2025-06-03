@@ -39,17 +39,25 @@
                                         </span>
                                     @endif
                                 </div>
-
                                 <div class="d-flex align-items-center">
                                     <h2 class="text-success mb-0 me-3">
                                         Rp {{ number_format($jamu->harga, 0, ',', '.') }}
                                     </h2>
                                     @if ($jamu->expired_date)
-                                        <small class="text-muted">
+                                        <small class="text-muted me-3">
                                             <i class="fas fa-calendar-alt me-1"></i>
                                             Exp: {{ date('d/m/Y', strtotime($jamu->expired_date)) }}
                                         </small>
                                     @endif
+                                    @auth
+                                        <button
+                                            class="btn {{ $jamu->isFavorited() ? 'btn-danger' : 'btn-outline-danger' }} favorite-toggle-btn"
+                                            data-jamu-id="{{ $jamu->id }}"
+                                            title="{{ $jamu->isFavorited() ? 'Hapus dari favorit' : 'Tambahkan ke favorit' }}">
+                                            <i class="{{ $jamu->isFavorited() ? 'fas' : 'far' }} fa-heart"></i>
+                                            {{ $jamu->isFavorited() ? 'Favorit' : 'Tambah ke Favorit' }}
+                                        </button>
+                                    @endauth
                                 </div>
                             </div>
 
@@ -64,7 +72,8 @@
                                 </div>
 
                                 @auth
-                                    <button class="btn btn-outline-danger favorite-btn mb-2" data-jamu-id="{{ $jamu->id }}">
+                                    <button class="btn btn-outline-danger favorite-btn mb-2"
+                                        data-jamu-id="{{ $jamu->id }}">
                                         <i class="fas fa-heart me-2"></i>
                                         Favorit
                                     </button>
