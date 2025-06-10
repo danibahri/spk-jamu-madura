@@ -98,7 +98,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('jamu.*') ? 'active fw-bold' : '' }}"
+                            <a class="nav-link {{ request()->routeIs('jamu.*') && !request()->routeIs('admin.*') ? 'active fw-bold' : '' }}"
                                 href="{{ route('jamu.index') }}">
                                 <i class="fas fa-pills text-success me-1"></i>Jamu
                             </a>
@@ -110,11 +110,45 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('articles.*') ? 'active fw-bold' : '' }}"
+                            <a class="nav-link {{ request()->routeIs('articles.*') && !request()->routeIs('admin.*') ? 'active fw-bold' : '' }}"
                                 href="{{ route('articles.index') }}">
                                 <i class="fas fa-newspaper text-info me-1"></i>Artikel
                             </a>
                         </li>
+
+                        @auth
+                            @if (Auth::user()->role === 'admin')
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.*') ? 'active fw-bold text-danger' : '' }}"
+                                        href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-tools text-danger me-1"></i>Admin
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                                                href="{{ route('admin.dashboard') }}">
+                                                <i class="fas fa-tachometer-alt text-primary me-2"></i>Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item {{ request()->routeIs('admin.jamu.*') ? 'active' : '' }}"
+                                                href="{{ route('admin.jamu.index') }}">
+                                                <i class="fas fa-pills text-success me-2"></i>Kelola Jamu
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item {{ request()->routeIs('admin.articles.*') ? 'active' : '' }}"
+                                                href="{{ route('admin.articles.index') }}">
+                                                <i class="fas fa-newspaper text-info me-2"></i>Kelola Artikel
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @endif
+                        @endauth
                     </ul>
 
                     <ul class="navbar-nav">
@@ -137,14 +171,6 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    @if (Auth::user()->role === 'admin')
-                                        <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                                <i class="fas fa-tachometer-alt text-primary me-2"></i>Admin Panel
-                                            </a></li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                    @endif
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf

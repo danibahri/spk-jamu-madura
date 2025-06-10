@@ -73,17 +73,17 @@
                 </div>
 
                 <!-- Article Image -->
-                @if ($article->image)
+                @if ($article->featured_image)
                     <div class="article-image mb-5">
-                        <img src="{{ $article->image }}" class="img-fluid rounded shadow" alt="{{ $article->title }}"
-                            style="width: 100%; height: 400px; object-fit: cover;">
+                        <img src="{{ $article->featured_image }}" class="img-fluid rounded shadow"
+                            alt="{{ $article->title }}" style="width: 100%; height: 400px; object-fit: cover;">
                     </div>
                 @endif
 
                 <!-- Article Content -->
                 <div class="article-content">
                     <div class="content-body">
-                        {!! nl2br(e($article->content)) !!}
+                        {!! $article->content !!}
                     </div>
                 </div>
 
@@ -242,70 +242,6 @@
                         @endif
                     </div>
                 </div>
-
-                <!-- Newsletter -->
-                <div class="card mb-4 border-0 shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-envelope me-2"></i>
-                            Newsletter
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-3">
-                            Dapatkan artikel terbaru tentang jamu dan kesehatan herbal!
-                        </p>
-                        <form id="newsletterForm">
-                            @csrf
-                            <div class="mb-3">
-                                <input type="email" class="form-control" name="email" placeholder="Email Anda"
-                                    required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="fas fa-paper-plane me-2"></i>
-                                    Berlangganan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Category Articles -->
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-secondary text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-folder me-2"></i>
-                            Artikel {{ $article->category }}
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        @if ($categoryArticles->count() > 0)
-                            @foreach ($categoryArticles->take(5) as $categoryArticle)
-                                <div class="{{ !$loop->last ? 'pb-3 border-bottom' : '' }} mb-3">
-                                    <h6 class="mb-1">
-                                        <a href="{{ route('articles.show', $categoryArticle->slug) }}"
-                                            class="text-decoration-none">
-                                            {{ Str::limit($categoryArticle->title, 60) }}
-                                        </a>
-                                    </h6>
-                                    <small class="text-muted">
-                                        {{ $categoryArticle->created_at->diffForHumans() }}
-                                    </small>
-                                </div>
-                            @endforeach
-
-                            <div class="mt-3 text-center">
-                                <a href="{{ route('articles.index', ['category' => $article->category]) }}"
-                                    class="btn btn-outline-secondary btn-sm">
-                                    Lihat Semua
-                                </a>
-                            </div>
-                        @else
-                            <p class="text-muted text-center">Belum ada artikel lain</p>
-                        @endif
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -416,34 +352,6 @@
                     toc.innerHTML = '<p class="text-muted text-center">Tidak ada heading ditemukan</p>';
                 }
             }
-        });
-
-        // Newsletter form
-        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-
-            fetch('/newsletter/subscribe', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('Berhasil berlangganan newsletter!', 'success');
-                        this.reset();
-                    } else {
-                        showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
-                });
         });
 
         function showNotification(message, type) {

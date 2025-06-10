@@ -179,7 +179,6 @@
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3">
                         <h6 class="font-weight-bold text-success m-0">Aktivitas Pengguna</h6>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-success">Lihat Semua</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -262,14 +261,15 @@
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3">
                         <h6 class="font-weight-bold text-info m-0">Artikel Terbaru</h6>
-                        <a href="{{ route('admin.articles.index') }}" class="btn btn-sm btn-info">Kelola Artikel</a>
+                        <a href="{{ route('admin.articles.index') }}" class="btn btn-sm btn-info text-white">Kelola
+                            Artikel</a>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             @forelse($recent_articles as $article)
                                 <div class="col-md-4 mb-3">
                                     <div class="card h-100">
-                                        <img src="https://via.placeholder.com/300x200?text=Article" class="card-img-top"
+                                        <img src="{{ asset($article->featured_image) }}" class="card-img-top"
                                             alt="{{ $article->title }}">
                                         <div class="card-body">
                                             <h6 class="card-title">{{ Str::limit($article->title, 50) }}</h6>

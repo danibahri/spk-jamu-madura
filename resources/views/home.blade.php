@@ -21,8 +21,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <img src="https://via.placeholder.com/500x400/4a7c59/ffffff?text=Jamu+Madura" alt="Jamu Madura"
-                        class="img-fluid rounded-3 shadow">
+                    <img src="{{ asset('images/jamu.png') }}" alt="Jamu Madura" class="img-fluid rounded-3">
                 </div>
             </div>
         </div>
@@ -134,7 +133,7 @@
             <div class="row">
                 @foreach ($categories as $category)
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <a href="{{ route('jamu.category', $category) }}" class="text-decoration-none">
+                        <a href="javascript:void(0)" class="text-decoration-none">
                             <div class="card card-hover h-100 border-0 text-center">
                                 <div class="card-body">
                                     <div class="text-primary mb-3">

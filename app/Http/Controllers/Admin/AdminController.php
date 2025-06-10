@@ -126,7 +126,7 @@ class AdminController extends Controller
     public function createJamu()
     {
         $categories = Jamu::getCategories();
-        return view('admin.jamus.create', compact('categories'));
+        return view('admin.jamu.create', compact('categories'));
     }
 
     public function storeJamu(Request $request)
@@ -147,7 +147,7 @@ class AdminController extends Controller
 
         Jamu::create($request->all());
 
-        return redirect()->route('admin.jamus')
+        return redirect()->route('admin.jamu.index')
             ->with('success', 'Jamu berhasil ditambahkan!');
     }
 
@@ -155,7 +155,7 @@ class AdminController extends Controller
     {
         $jamu = Jamu::findOrFail($id);
         $categories = Jamu::getCategories();
-        return view('admin.jamus.edit', compact('jamu', 'categories'));
+        return view('admin.jamu.edit', compact('jamu', 'categories'));
     }
 
     public function updateJamu(Request $request, $id)
@@ -178,7 +178,7 @@ class AdminController extends Controller
 
         $jamu->update($request->all());
 
-        return redirect()->route('admin.jamus')
+        return redirect()->route('admin.jamu.index')
             ->with('success', 'Jamu berhasil diperbarui!');
     }
 
@@ -187,7 +187,7 @@ class AdminController extends Controller
         $jamu = Jamu::findOrFail($id);
         $jamu->delete();
 
-        return redirect()->route('admin.jamus')
+        return redirect()->route('admin.jamu.index')
             ->with('success', 'Jamu berhasil dihapus!');
     }
 
@@ -220,5 +220,178 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.analytics', compact('searchData', 'categoryData', 'userRegistrations'));
+    }
+
+    // Article Management Methods
+    public function articles(Request $request)
+    {
+        $query = Article::with('author');
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%')
+                ->orWhere('content', 'like', '%' . $request->search . '%')
+                ->orWhere('category', 'like', '%' . $request->search . '%');
+        }
+
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            if ($request->status === 'published') {
+                $query->where('is_published', true);
+            } elseif ($request->status === 'draft') {
+                $query->where('is_published', false);
+            }
+        }
+
+        // Sorting
+        switch ($request->get('sort', 'newest')) {
+            case 'oldest':
+                $query->oldest();
+                break;
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'category':
+                $query->orderBy('category', 'asc');
+                break;
+            default:
+                $query->latest();
+                break;
+        }
+
+        $articles = $query->paginate(20);
+        $categories = Article::distinct('category')->pluck('category')->filter()->values();
+
+        return view('admin.articles.index', compact('articles', 'categories'));
+    }
+
+    public function createArticle()
+    {
+        $categories = ['Pengetahuan Jamu', 'Tips Kesehatan', 'Cara Penggunaan', 'Resep Tradisional', 'Penelitian'];
+        return view('admin.articles.create', compact('categories'));
+    }
+
+    public function storeArticle(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'excerpt' => 'required|string|max:500',
+            'content' => 'required|string',
+            'featured_image' => 'nullable|string',
+            'is_published' => 'boolean',
+        ]);
+
+        $isPublished = $request->has('is_published') ? true : false;
+
+        $article = new Article();
+        $article->title = $request->title;
+        $article->slug = \Str::slug($request->title);
+        $article->category = $request->category;
+        $article->excerpt = $request->excerpt;
+        $article->content = $request->content;
+        $article->featured_image = $request->featured_image;
+        $article->is_published = $isPublished;
+        $article->author_id = auth()->id();
+
+        if ($article->is_published) {
+            $article->published_at = now();
+        }
+
+        $article->save();
+
+        return redirect()->route('admin.articles.index')
+            ->with('success', 'Artikel berhasil dibuat!');
+    }
+
+    public function editArticle($id)
+    {
+        $article = Article::findOrFail($id);
+        $categories = ['Pengetahuan Jamu', 'Tips Kesehatan', 'Cara Penggunaan', 'Resep Tradisional', 'Penelitian'];
+        return view('admin.articles.edit', compact('article', 'categories'));
+    }
+
+    public function updateArticle(Request $request, $id)
+    {
+        $article = Article::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'excerpt' => 'required|string|max:500',
+            'content' => 'required|string',
+            'featured_image' => 'nullable|string',
+            'is_published' => 'boolean',
+        ]);
+
+        $isPublished = $request->has('is_published') ? true : false;
+
+        $article->title = $request->title;
+        $article->slug = \Str::slug($request->title);
+        $article->category = $request->category;
+        $article->excerpt = $request->excerpt;
+        $article->content = $request->content;
+        $article->featured_image = $request->featured_image;
+        $article->is_published = $isPublished;
+
+        if ($article->is_published && !$article->published_at) {
+            $article->published_at = now();
+        }
+
+        $article->save();
+
+        return redirect()->route('admin.articles.index')
+            ->with('success', 'Artikel berhasil diperbarui!');
+    }
+
+    public function destroyArticle($id)
+    {
+        $article = Article::findOrFail($id);
+        $article->delete();
+
+        return redirect()->route('admin.articles.index')
+            ->with('success', 'Artikel berhasil dihapus!');
+    }
+
+    public function bulkJamu(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|string',
+            'selected_jamus' => 'required|array',
+        ]);
+
+        $jamuIds = $request->selected_jamus;
+        $action = $request->action;
+
+        switch ($action) {
+            case 'delete':
+                Jamu::whereIn('id', $jamuIds)->delete();
+                return redirect()->route('admin.jamu.index')
+                    ->with('success', count($jamuIds) . ' jamu berhasil dihapus!');
+                break;
+
+            case 'update_category':
+                $request->validate(['new_category' => 'required|string']);
+                Jamu::whereIn('id', $jamuIds)->update(['kategori' => $request->new_category]);
+                return redirect()->route('admin.jamu.index')
+                    ->with('success', count($jamuIds) . ' jamu berhasil diupdate kategorinya!');
+                break;
+
+            case 'update_status':
+                $request->validate(['new_status' => 'required|string']);
+                $isActive = $request->new_status === 'active';
+                Jamu::whereIn('id', $jamuIds)->update(['is_active' => $isActive]);
+                return redirect()->route('admin.jamu.index')
+                    ->with('success', count($jamuIds) . ' jamu berhasil diupdate statusnya!');
+                break;
+        }
+
+        return redirect()->route('admin.jamu.index')
+            ->with('error', 'Aksi tidak valid!');
     }
 }

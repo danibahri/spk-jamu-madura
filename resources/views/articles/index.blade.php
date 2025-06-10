@@ -84,8 +84,8 @@
                                     </a>
                                 </div>
                                 <div class="col-md-4">
-                                    @if ($featuredArticle->image)
-                                        <img src="{{ $featuredArticle->image }}" class="img-fluid rounded"
+                                    @if ($featuredArticle->featured_image)
+                                        <img src="{{ $featuredArticle->featured_image }}" class="img-fluid rounded"
                                             alt="{{ $featuredArticle->title }}">
                                     @else
                                         <div class="bg-success d-flex align-items-center justify-content-center rounded text-white"
@@ -238,34 +238,6 @@
                     </div>
                 </div>
 
-                <!-- Newsletter Signup -->
-                <div class="card mb-4 border-0 shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-envelope me-2"></i>
-                            Newsletter
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-3">
-                            Dapatkan artikel terbaru tentang jamu dan kesehatan herbal langsung di email Anda!
-                        </p>
-                        <form id="newsletterForm">
-                            @csrf
-                            <div class="mb-3">
-                                <input type="email" class="form-control" name="email" placeholder="Email Anda"
-                                    required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="fas fa-paper-plane me-2"></i>
-                                    Berlangganan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
                 <!-- Quick Actions -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-warning text-dark">
@@ -284,17 +256,6 @@
                                 <i class="fas fa-leaf me-2"></i>
                                 Jelajahi Jamu
                             </a>
-                            @auth
-                                <a href="{{ route('user.dashboard') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-tachometer-alt me-2"></i>
-                                    Dashboard
-                                </a>
-                            @else
-                                <a href="{{ route('login') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-sign-in-alt me-2"></i>
-                                    Masuk
-                                </a>
-                            @endauth
                         </div>
                     </div>
                 </div>
@@ -337,34 +298,6 @@
             if (e.key === 'Enter') {
                 searchArticles();
             }
-        });
-
-        // Newsletter form
-        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-
-            fetch('/newsletter/subscribe', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Berhasil berlangganan newsletter!');
-                        this.reset();
-                    } else {
-                        alert('Terjadi kesalahan. Silakan coba lagi.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan. Silakan coba lagi.');
-                });
         });
 
         // Auto-focus search if there's a search parameter
