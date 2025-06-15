@@ -237,11 +237,11 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="bg-primary py-5 text-white">
+    <section class="py-5">
         <div class="container text-center">
             <h2 class="fw-bold mb-4">Mulai Mencari Jamu yang Tepat untuk Anda</h2>
             <p class="lead mb-4">Gunakan sistem rekomendasi SMART untuk mendapatkan saran jamu terbaik</p>
-            <a href="{{ route('smart.index') }}" class="btn btn-light btn-lg">
+            <a href="{{ route('smart.index') }}" class="btn btn-outline-primary btn-lg">
                 <i class="fas fa-calculator me-2"></i>Mulai Rekomendasi Sekarang
             </a>
         </div>
