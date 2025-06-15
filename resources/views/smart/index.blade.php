@@ -30,6 +30,20 @@
                         <form id="smartForm" method="POST" action="{{ route('smart.calculate') }}">
                             @csrf
 
+                            <!-- Search Query (Optional) -->
+                            <div class="mb-4">
+                                <label for="search_query" class="form-label fw-bold">
+                                    <i class="fas fa-search me-2"></i>Kata Kunci Pencarian (Opsional)
+                                </label>
+                                <input type="text" class="form-control" id="search_query" name="search_query"
+                                    placeholder="Contoh: diabetes, hipertensi, stamina...">
+                                <small class="form-text text-muted">
+                                    Masukkan kata kunci untuk mencari jamu dengan khasiat tertentu
+                                </small>
+                            </div>
+
+                            <hr class="my-4">
+
                             <div class="row">
                                 <!-- Kandungan Weight -->
                                 <div class="col-md-6 mb-4">
@@ -41,11 +55,12 @@
                                                 <small class="text-muted">Seberapa penting kualitas kandungan?</small>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="kandungan_weight" class="form-label fw-bold">
-                                                Bobot: <span id="kandungan_value">25</span>%
+                                        <div class="mb-3"> <label for="kandungan_weight" class="form-label fw-bold">
+                                                Bobot: <span
+                                                    id="kandungan_value">{{ isset($userPreference) && $userPreference ? round($userPreference->weight_kandungan * 100) : 25 }}</span>%
                                             </label> <input type="range" class="form-range" id="kandungan_weight"
-                                                name="weights[kandungan]" min="0" max="100" value="25"
+                                                name="weights[kandungan]" min="0" max="100"
+                                                value="{{ isset($userPreference) && $userPreference ? round($userPreference->weight_kandungan * 100) : 25 }}"
                                                 oninput="updateValue('kandungan', this.value)">
                                         </div>
                                     </div>
@@ -61,11 +76,12 @@
                                                 <small class="text-muted">Seberapa penting manfaat kesehatan?</small>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="khasiat_weight" class="form-label fw-bold">
-                                                Bobot: <span id="khasiat_value">30</span>%
+                                        <div class="mb-3"> <label for="khasiat_weight" class="form-label fw-bold">
+                                                Bobot: <span
+                                                    id="khasiat_value">{{ isset($userPreference) && $userPreference ? round($userPreference->weight_khasiat * 100) : 30 }}</span>%
                                             </label> <input type="range" class="form-range" id="khasiat_weight"
-                                                name="weights[khasiat]" min="0" max="100" value="30"
+                                                name="weights[khasiat]" min="0" max="100"
+                                                value="{{ isset($userPreference) && $userPreference ? round($userPreference->weight_khasiat * 100) : 30 }}"
                                                 oninput="updateValue('khasiat', this.value)">
                                         </div>
                                     </div>
@@ -81,11 +97,12 @@
                                                 <small class="text-muted">Seberapa penting faktor harga?</small>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="harga_weight" class="form-label fw-bold">
-                                                Bobot: <span id="harga_value">20</span>%
+                                        <div class="mb-3"> <label for="harga_weight" class="form-label fw-bold">
+                                                Bobot: <span
+                                                    id="harga_value">{{ isset($userPreference) && $userPreference ? round($userPreference->weight_harga * 100) : 20 }}</span>%
                                             </label> <input type="range" class="form-range" id="harga_weight"
-                                                name="weights[harga]" min="0" max="100" value="20"
+                                                name="weights[harga]" min="0" max="100"
+                                                value="{{ isset($userPreference) && $userPreference ? round($userPreference->weight_harga * 100) : 20 }}"
                                                 oninput="updateValue('harga', this.value)">
                                         </div>
                                     </div>
@@ -101,11 +118,12 @@
                                                 <small class="text-muted">Seberapa penting masa simpan?</small>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="expired_weight" class="form-label fw-bold">
-                                                Bobot: <span id="expired_value">25</span>%
+                                        <div class="mb-3"> <label for="expired_weight" class="form-label fw-bold">
+                                                Bobot: <span
+                                                    id="expired_value">{{ isset($userPreference) && $userPreference ? round($userPreference->weight_expired * 100) : 25 }}</span>%
                                             </label> <input type="range" class="form-range" id="expired_weight"
-                                                name="weights[expired]" min="0" max="100" value="25"
+                                                name="weights[expired]" min="0" max="100"
+                                                value="{{ isset($userPreference) && $userPreference ? round($userPreference->weight_expired * 100) : 25 }}"
                                                 oninput="updateValue('expired', this.value)">
                                         </div>
                                     </div>
@@ -136,7 +154,19 @@
                                         <option value="500000">≤ Rp 500.000</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> <!-- Actions -->
+                            @auth
+                                <div class="d-flex mt-4 gap-2">
+                                    @if ($userPreference)
+                                        <button type="button" class="btn btn-outline-primary" onclick="loadPreferences()">
+                                            <i class="fas fa-cog me-2"></i>Gunakan Preferensi Saya
+                                        </button>
+                                    @endif
+                                    <a href="{{ route('preferences.index') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-sliders-h me-2"></i>Atur Preferensi
+                                    </a>
+                                </div>
+                            @endauth
 
                             <!-- Submit Button -->
                             <div class="d-grid mt-4">
@@ -197,10 +227,50 @@
             background: #28a745;
         }
     </style>
-
     <script>
         function updateValue(criteria, value) {
             document.getElementById(criteria + '_value').textContent = value;
+        }
+
+        function loadPreferences() {
+            @if (isset($userPreference) && $userPreference)
+                const preferences = @json($userPreference);
+
+                // Load weights
+                document.getElementById('kandungan_weight').value = Math.round(preferences.weight_kandungan * 100);
+                updateValue('kandungan', Math.round(preferences.weight_kandungan * 100));
+
+                document.getElementById('khasiat_weight').value = Math.round(preferences.weight_khasiat * 100);
+                updateValue('khasiat', Math.round(preferences.weight_khasiat * 100));
+
+                document.getElementById('harga_weight').value = Math.round(preferences.weight_harga * 100);
+                updateValue('harga', Math.round(preferences.weight_harga * 100));
+
+                document.getElementById('expired_weight').value = Math.round(preferences.weight_expired * 100);
+                updateValue('expired', Math.round(preferences.weight_expired * 100)); // Load filters if available
+                if (preferences.preferred_categories && preferences.preferred_categories.length > 0) {
+                    const categorySelect = document.getElementById('kategori');
+                    categorySelect.value = preferences.preferred_categories[0];
+                }
+
+                if (preferences.max_price) {
+                    const maxPriceSelect = document.getElementById('max_harga');
+                    maxPriceSelect.value = preferences.max_price;
+                }
+
+                // Show success message
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Preferensi berhasil dimuat',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else if (typeof alert !== 'undefined') {
+                    alert.success('Berhasil!', 'Preferensi berhasil dimuat');
+                }
+            @endif
         }
 
         // Auto-save preferences
@@ -208,18 +278,83 @@
             const form = document.getElementById('smartForm');
             const ranges = form.querySelectorAll('input[type="range"]');
 
-            ranges.forEach(range => {
-                range.addEventListener('change', function() {
-                    // Save to localStorage for user preference
-                    localStorage.setItem(this.name, this.value);
-                });
+            @if (isset($repeatSearch) && $repeatSearch)
+                // Load from repeat search data
+                const repeatData = @json($repeatSearch);
 
-                // Load from localStorage
-                const saved = localStorage.getItem(range.name);
-                if (saved) {
-                    range.value = saved;
-                    updateValue(range.name.replace('_weight', ''), saved);
+                if (repeatData.criteria_weights) {
+                    Object.keys(repeatData.criteria_weights).forEach(criteria => {
+                        const weight = repeatData.criteria_weights[criteria];
+                        const weightPercentage = Math.round(weight * 100);
+                        const input = document.querySelector(`input[name="weights[${criteria}]"]`);
+
+                        if (input) {
+                            input.value = weightPercentage;
+                            updateValue(criteria, weightPercentage);
+                        }
+                    });
                 }
+
+                // Load filters if any
+                if (repeatData.filters_applied) {
+                    Object.keys(repeatData.filters_applied).forEach(filter => {
+                        const value = repeatData.filters_applied[filter];
+                        const input = document.querySelector(
+                            `input[name="filters[${filter}]"], select[name="filters[${filter}]"]`);
+
+                        if (input) {
+                            if (input.type === 'checkbox') {
+                                input.checked = !!value;
+                            } else {
+                                input.value = value;
+                            }
+                        }
+                    });
+                }
+
+                // Fill search query if available
+                if (repeatData.search_query) {
+                    const searchInput = document.querySelector('input[name="search_query"]');
+                    if (searchInput) {
+                        searchInput.value = repeatData.search_query;
+                    }
+                }
+
+                // Show notification
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Parameter pencarian sebelumnya berhasil dimuat',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            @else
+                // Normal behavior - load from localStorage
+                ranges.forEach(range => {
+                    range.addEventListener('change', function() {
+                        // Save to localStorage for user preference
+                        localStorage.setItem(this.name, this.value);
+                    });
+
+                    // Load from localStorage only if no user preferences
+                    @if (!isset($userPreference) || !$userPreference)
+                        const saved = localStorage.getItem(range.name);
+                        if (saved) {
+                            range.value = saved;
+                            updateValue(range.name.replace('weights[', '').replace(']', ''), saved);
+                        }
+                    @endif
+                });
+            @endif
+
+            // Always add event listeners for real-time updates
+            ranges.forEach(range => {
+                range.addEventListener('input', function() {
+                    const criteria = this.name.replace('weights[', '').replace(']', '');
+                    updateValue(criteria, this.value);
+                });
             });
         });
     </script>

@@ -129,16 +129,21 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="btn-group">
-                                                <a href="{{ route('jamu.index', ['search' => $history->search_query]) }}"
-                                                    class="btn btn-sm btn-success">
-                                                    <i class="fas fa-redo me-1"></i>Cari Lagi
+                                                <a href="{{ route('search-history.show', $history->id) }}"
+                                                    class="btn btn-sm btn-primary" title="Lihat Detail">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('search-history.repeat', $history->id) }}"
+                                                    class="btn btn-sm btn-success" title="Ulangi Pencarian">
+                                                    <i class="fas fa-redo me-1"></i>Ulangi
                                                 </a>
                                                 <form action="{{ route('search-history.destroy', $history->id) }}"
                                                     method="POST" onsubmit="return confirm('Hapus riwayat ini?')"
                                                     class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        title="Hapus">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>

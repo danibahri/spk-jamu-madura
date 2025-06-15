@@ -7,6 +7,7 @@ use App\Http\Controllers\SmartController;
 use App\Http\Controllers\UserPreferenceController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\SearchHistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminController;
 
@@ -50,9 +51,11 @@ Route::middleware('auth')->group(function () {
 
     // Search history
     Route::prefix('search-history')->name('search-history.')->group(function () {
-        Route::get('/', [UserPreferenceController::class, 'history'])->name('index');
-        Route::delete('/{id}', [UserPreferenceController::class, 'deleteHistory'])->name('destroy');
-        Route::delete('/', [UserPreferenceController::class, 'clearHistory'])->name('clear');
+        Route::get('/', [SearchHistoryController::class, 'index'])->name('index');
+        Route::get('/{id}', [SearchHistoryController::class, 'show'])->name('show');
+        Route::get('/{id}/repeat', [SearchHistoryController::class, 'repeat'])->name('repeat');
+        Route::delete('/{id}', [SearchHistoryController::class, 'destroy'])->name('destroy');
+        Route::delete('/', [SearchHistoryController::class, 'clear'])->name('clear');
     });
 
     // Favorites

@@ -21,8 +21,15 @@ class SmartController extends Controller
     public function index()
     {
         $categories = Jamu::distinct('kategori')->pluck('kategori')->toArray();
+        $repeatSearch = session('repeat_search');
+        $userPreference = null;
 
-        return view('smart.index', compact('categories'));
+        // Get user preferences if logged in
+        if (Auth::check()) {
+            $userPreference = Auth::user()->preference;
+        }
+
+        return view('smart.index', compact('categories', 'repeatSearch', 'userPreference'));
     }
 
     public function calculate(Request $request)
@@ -74,7 +81,7 @@ class SmartController extends Controller
         if (Auth::check()) {
             SearchHistory::create([
                 'user_id' => Auth::id(),
-                'search_query' => $request->input('search_query'),
+                'search_query' => $request->input('search_query', ''),
                 'criteria_weights' => $weights,
                 'filters_applied' => $filters,
                 'results' => array_slice($results, 0, 10) // Save top 10 results

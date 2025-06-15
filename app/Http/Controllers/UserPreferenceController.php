@@ -31,62 +31,51 @@ class UserPreferenceController extends Controller
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0',
             'allergic_ingredients' => 'nullable|array',
-            'weight_kandungan' => 'required|numeric|min:0|max:1',
-            'weight_khasiat' => 'required|numeric|min:0|max:1',
-            'weight_harga' => 'required|numeric|min:0|max:1',
-            'weight_expired' => 'required|numeric|min:0|max:1',
+            'weight_kandungan' => 'required|numeric|min:0|max:100',
+            'weight_khasiat' => 'required|numeric|min:0|max:100',
+            'weight_harga' => 'required|numeric|min:0|max:100',
+            'weight_expired' => 'required|numeric|min:0|max:100',
         ]);
 
-        // Validate that weights sum to approximately 1.0
-        $totalWeight = $request->weight_kandungan + $request->weight_khasiat +
-            $request->weight_harga + $request->weight_expired;
+        // Auto-normalize weights from percentage to decimal
+        $weights = [
+            'weight_kandungan' => $request->weight_kandungan,
+            'weight_khasiat' => $request->weight_khasiat,
+            'weight_harga' => $request->weight_harga,
+            'weight_expired' => $request->weight_expired,
+        ];
 
-        if (abs($totalWeight - 1.0) > 0.01) {
-            return back()->withErrors(['weights' => 'Total bobot kriteria harus sama dengan 1.0']);
+        $totalWeight = array_sum($weights);
+        if ($totalWeight > 0) {
+            // Normalize to decimal (0-1)
+            $weights = array_map(function ($weight) use ($totalWeight) {
+                return $weight / $totalWeight;
+            }, $weights);
+        } else {
+            // Default equal weights
+            $weights = [
+                'weight_kandungan' => 0.25,
+                'weight_khasiat' => 0.25,
+                'weight_harga' => 0.25,
+                'weight_expired' => 0.25,
+            ];
         }
 
         UserPreference::updateOrCreate(
             ['user_id' => Auth::id()],
-            $request->only([
-                'health_condition',
-                'preferred_categories',
-                'min_price',
-                'max_price',
-                'allergic_ingredients',
-                'weight_kandungan',
-                'weight_khasiat',
-                'weight_harga',
-                'weight_expired'
-            ])
+            array_merge(
+                $request->only([
+                    'health_condition',
+                    'preferred_categories',
+                    'min_price',
+                    'max_price',
+                    'allergic_ingredients'
+                ]),
+                $weights
+            )
         );
 
         return redirect()->route('preferences.index')
             ->with('success', 'Preferensi berhasil disimpan!');
-    }
-
-    public function history()
-    {
-        $histories = Auth::user()->searchHistories()
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('search-history.index', compact('histories'));
-    }
-
-    public function deleteHistory($id)
-    {
-        $history = Auth::user()->searchHistories()->findOrFail($id);
-        $history->delete();
-
-        return redirect()->route('search-history.index')
-            ->with('success', 'Riwayat pencarian berhasil dihapus!');
-    }
-
-    public function clearHistory()
-    {
-        Auth::user()->searchHistories()->delete();
-
-        return redirect()->route('search-history.index')
-            ->with('success', 'Semua riwayat pencarian berhasil dihapus!');
     }
 }

@@ -61,23 +61,50 @@ class SmartAlgorithmService
             'expired' => $this->normalizeExpired($jamu->expired_date)
         ];
     }
-
     /**
-     * Normalize kandungan value (1-5 scale)
+     * Normalize kandungan value (dynamic range detection)
      */
     private function normalizeKandungan($value)
     {
-        // Higher kandungan value is better
-        return $value / 100;
+        static $minValue = null;
+        static $maxValue = null;
+
+        // Cache min/max values for performance
+        if ($minValue === null || $maxValue === null) {
+            $minValue = \App\Models\Jamu::min('nilai_kandungan');
+            $maxValue = \App\Models\Jamu::max('nilai_kandungan');
+        }
+
+        // Handle edge case where min = max
+        if ($maxValue == $minValue) {
+            return 1.0;
+        }
+
+        // Linear normalization to 0-1 range
+        return ($value - $minValue) / ($maxValue - $minValue);
     }
 
     /**
-     * Normalize khasiat value (1-5 scale)
+     * Normalize khasiat value (dynamic range detection)
      */
     private function normalizeKhasiat($value)
     {
-        // Higher khasiat value is better
-        return $value / 100;
+        static $minValue = null;
+        static $maxValue = null;
+
+        // Cache min/max values for performance
+        if ($minValue === null || $maxValue === null) {
+            $minValue = \App\Models\Jamu::min('nilai_khasiat');
+            $maxValue = \App\Models\Jamu::max('nilai_khasiat');
+        }
+
+        // Handle edge case where min = max
+        if ($maxValue == $minValue) {
+            return 1.0;
+        }
+
+        // Linear normalization to 0-1 range
+        return ($value - $minValue) / ($maxValue - $minValue);
     }
 
     /**

@@ -124,75 +124,62 @@
                         <div class="bg-light rounded p-3">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
-                                Total bobot seluruh kriteria harus sama dengan 1.0 (atau 100%). Semakin tinggi nilai bobot,
-                                semakin penting kriteria tersebut dalam penilaian jamu.
+                                Atur prioritas setiap kriteria sesuai kebutuhan Anda. Sistem akan menormalisasi secara
+                                otomatis
+                                sehingga total proporsi selalu seimbang.
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-md-6 mb-3">
-                                    <label for="weight_kandungan" class="form-label">Bobot Kandungan</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control weight-input" id="weight_kandungan"
-                                            name="weight_kandungan"
-                                            value="{{ old('weight_kandungan', $preference->weight_kandungan ?? 0.25) }}"
-                                            min="0" max="1" step="0.01">
-                                        <div class="input-group-text">
-                                            <div class="progress flex-grow-1" style="width: 80px; height: 10px;">
-                                                <div class="progress-bar bg-primary weight-bar" id="bar_kandungan"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label for="weight_kandungan" class="form-label">
+                                        Bobot Kandungan: <span
+                                            id="kandungan_display">{{ isset($preference) && $preference ? round($preference->weight_kandungan * 100) : 25 }}</span>%
+                                    </label>
+                                    <input type="range" class="form-range weight-input" id="weight_kandungan"
+                                        name="weight_kandungan" min="0" max="100"
+                                        value="{{ isset($preference) && $preference ? round($preference->weight_kandungan * 100) : 25 }}"
+                                        oninput="updateWeightDisplay('kandungan', this.value)">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="weight_khasiat" class="form-label">Bobot Khasiat</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control weight-input" id="weight_khasiat"
-                                            name="weight_khasiat"
-                                            value="{{ old('weight_khasiat', $preference->weight_khasiat ?? 0.25) }}"
-                                            min="0" max="1" step="0.01">
-                                        <div class="input-group-text">
-                                            <div class="progress flex-grow-1" style="width: 80px; height: 10px;">
-                                                <div class="progress-bar bg-success weight-bar" id="bar_khasiat"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label for="weight_khasiat" class="form-label">
+                                        Bobot Khasiat: <span
+                                            id="khasiat_display">{{ isset($preference) && $preference ? round($preference->weight_khasiat * 100) : 25 }}</span>%
+                                    </label>
+                                    <input type="range" class="form-range weight-input" id="weight_khasiat"
+                                        name="weight_khasiat" min="0" max="100"
+                                        value="{{ isset($preference) && $preference ? round($preference->weight_khasiat * 100) : 25 }}"
+                                        oninput="updateWeightDisplay('khasiat', this.value)">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="weight_harga" class="form-label">Bobot Harga</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control weight-input" id="weight_harga"
-                                            name="weight_harga"
-                                            value="{{ old('weight_harga', $preference->weight_harga ?? 0.25) }}"
-                                            min="0" max="1" step="0.01">
-                                        <div class="input-group-text">
-                                            <div class="progress flex-grow-1" style="width: 80px; height: 10px;">
-                                                <div class="progress-bar bg-warning weight-bar" id="bar_harga"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label for="weight_harga" class="form-label">
+                                        Bobot Harga: <span
+                                            id="harga_display">{{ isset($preference) && $preference ? round($preference->weight_harga * 100) : 25 }}</span>%
+                                    </label>
+                                    <input type="range" class="form-range weight-input" id="weight_harga"
+                                        name="weight_harga" min="0" max="100"
+                                        value="{{ isset($preference) && $preference ? round($preference->weight_harga * 100) : 25 }}"
+                                        oninput="updateWeightDisplay('harga', this.value)">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="weight_expired" class="form-label">Bobot Kadaluarsa</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control weight-input" id="weight_expired"
-                                            name="weight_expired"
-                                            value="{{ old('weight_expired', $preference->weight_expired ?? 0.25) }}"
-                                            min="0" max="1" step="0.01">
-                                        <div class="input-group-text">
-                                            <div class="progress flex-grow-1" style="width: 80px; height: 10px;">
-                                                <div class="progress-bar bg-danger weight-bar" id="bar_expired"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label for="weight_expired" class="form-label">
+                                        Bobot Kadaluarsa: <span
+                                            id="expired_display">{{ isset($preference) && $preference ? round($preference->weight_expired * 100) : 25 }}</span>%
+                                    </label>
+                                    <input type="range" class="form-range weight-input" id="weight_expired"
+                                        name="weight_expired" min="0" max="100"
+                                        value="{{ isset($preference) && $preference ? round($preference->weight_expired * 100) : 25 }}"
+                                        oninput="updateWeightDisplay('expired', this.value)">
                                 </div>
                             </div>
-
                             <div class="d-flex align-items-center justify-content-between rounded border bg-white p-3">
                                 <div>
-                                    <strong>Total Bobot:</strong>
-                                    <span id="total-weight" class="fw-bold fs-5 ms-2">1.00</span>
+                                    <strong>Total Input:</strong>
+                                    <span id="total-weight" class="fw-bold fs-5 ms-2">100</span>%
                                 </div>
-                                <div id="weight-status"></div>
+                                <div>
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-info-circle me-1"></i>Sistem Auto-Normalisasi
+                                    </span>
+                                </div>
                             </div>
 
                             @if ($errors->has('weights'))
@@ -228,53 +215,37 @@
             </div>
         </div>
     </div>
-
     <script>
+        function updateWeightDisplay(criteria, value) {
+            document.getElementById(criteria + '_display').textContent = value;
+            updateTotalWeight();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const weightInputs = document.querySelectorAll('.weight-input');
-            const weightBars = document.querySelectorAll('.weight-bar');
             const totalWeightSpan = document.getElementById('total-weight');
-            const weightStatusSpan = document.getElementById('weight-status');
-
-            function updateWeightBars() {
-                weightInputs.forEach(input => {
-                    const inputId = input.id;
-                    const barId = 'bar_' + inputId.split('_')[1];
-                    const bar = document.getElementById(barId);
-                    const value = parseFloat(input.value) || 0;
-
-                    // Update progress bar width
-                    bar.style.width = (value * 100) + '%';
-                });
-            }
 
             function updateTotalWeight() {
                 let total = 0;
                 weightInputs.forEach(input => {
-                    total += parseFloat(input.value) || 0;
+                    total += parseInt(input.value) || 0;
                 });
 
-                // Format to 2 decimal places
-                totalWeightSpan.textContent = total.toFixed(2);
+                totalWeightSpan.textContent = total;
 
-                // Check if the total is valid
-                if (Math.abs(total - 1.0) <= 0.01) {
-                    weightStatusSpan.innerHTML =
-                        '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Valid</span>';
-                    totalWeightSpan.classList.remove('text-danger');
-                    totalWeightSpan.classList.add('text-success');
+                // Update color based on total
+                if (total === 0) {
+                    totalWeightSpan.className = 'fw-bold fs-5 ms-2 text-muted';
                 } else {
-                    weightStatusSpan.innerHTML =
-                        '<span class="badge bg-danger"><i class="fas fa-times me-1"></i>Harus = 1.0</span>';
-                    totalWeightSpan.classList.remove('text-success');
-                    totalWeightSpan.classList.add('text-danger');
+                    totalWeightSpan.className = 'fw-bold fs-5 ms-2 text-primary';
                 }
-
-                updateWeightBars();
             }
 
             weightInputs.forEach(input => {
-                input.addEventListener('input', updateTotalWeight);
+                input.addEventListener('input', function() {
+                    const criteria = this.name.replace('weight_', '');
+                    updateWeightDisplay(criteria, this.value);
+                });
             });
 
             // Initial update
