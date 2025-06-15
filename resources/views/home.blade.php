@@ -84,11 +84,41 @@
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <span class="category-badge">{{ $jamu->kategori }}</span>
                                     <div class="rating-stars">
+                                        @php
+                                            $nilai = $jamu->nilai_khasiat;
+
+                                            // rentang target
+                                            $min_lama = 80;
+                                            $max_lama = 98;
+                                            $min_baru = 1;
+                                            $max_baru = 5;
+
+                                            // Pengaman: jika nilai di luar rentang, paskan ke min/max
+                                            if ($nilai < $min_lama) {
+                                                $nilai = $min_lama;
+                                            }
+                                            if ($nilai > $max_lama) {
+                                                $nilai = $max_lama;
+                                            }
+
+                                            // Hitung rentang (span) dari masing-masing skala
+                                            $rentang_lama = $max_lama - $min_lama; // Hasilnya 18
+                                            $rentang_baru = $max_baru - $min_baru; // Hasilnya 4
+
+                                            // Terapkan rumus interpolasi
+                                            $skala_float =
+                                                $min_baru + (($nilai - $min_lama) / $rentang_lama) * $rentang_baru;
+
+                                            // Bulatkan ke bintang terdekat
+                                            $ratingBintang = round($skala_float);
+                                        @endphp
+
+                                        {{-- Loop untuk menampilkan bintang --}}
                                         @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $jamu->nilai_khasiat)
-                                                <i class="fas fa-star"></i>
+                                            @if ($i <= $ratingBintang)
+                                                <i class="fas fa-star" style="color: #ffc107;"></i>
                                             @else
-                                                <i class="far fa-star"></i>
+                                                <i class="far fa-star" style="color: #ffc107;"></i>
                                             @endif
                                         @endfor
                                     </div>
