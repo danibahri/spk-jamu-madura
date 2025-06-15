@@ -264,16 +264,8 @@
                     </div>
                 </div>
                 <hr class="border-light">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <p class="text-light mb-0">&copy; 2025 SPK Jamu Madura. All rights reserved.</p>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
-                    </div>
+                <div class="row text-center">
+                    <p class="text-light mb-0">&copy; 2025 SPK Jamu Madura dibuat oleh kelompok 4</p>
                 </div>
             </div>
         </footer> <!-- Bootstrap JS -->

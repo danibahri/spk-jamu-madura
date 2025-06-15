@@ -14,7 +14,7 @@ class JamuSeeder extends Seeder
      */
     public function run(): void
     {
-        $csvFile = base_path('../dataset_jamu.csv');
+        $csvFile = base_path('../dataset_jamus.csv');
 
         if (!file_exists($csvFile)) {
             $this->command->error('CSV file not found at: ' . $csvFile);

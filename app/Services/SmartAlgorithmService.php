@@ -68,7 +68,7 @@ class SmartAlgorithmService
     private function normalizeKandungan($value)
     {
         // Higher kandungan value is better
-        return $value / 5;
+        return $value / 100;
     }
 
     /**
@@ -77,15 +77,16 @@ class SmartAlgorithmService
     private function normalizeKhasiat($value)
     {
         // Higher khasiat value is better
-        return $value / 5;
+        return $value / 100;
     }
 
     /**
      * Normalize harga value (lower is better)
-     */    private function normalizeHarga($price)
+     */
+    private function normalizeHarga($price)
     {
         $minPrice = 10000; // Minimum expected price
-        $maxPrice = 200000; // Maximum expected price
+        $maxPrice = 100000; // Maximum expected price
 
         // Invert the scale (lower price = higher score)
         $normalized = ($maxPrice - $price) / ($maxPrice - $minPrice);

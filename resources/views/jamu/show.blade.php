@@ -112,7 +112,7 @@
                                     <div class="progress mt-2">
                                         <div class="progress-bar bg-primary"
                                             style="width: {{ $jamu->nilai_kandungan * 10 }}%">
-                                            {{ $jamu->nilai_kandungan }}/10
+                                            {{ $jamu->nilai_kandungan }}/100
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
                                     <div class="progress mt-2">
                                         <div class="progress-bar bg-success"
                                             style="width: {{ $jamu->nilai_khasiat * 10 }}%">
-                                            {{ $jamu->nilai_khasiat }}/10
+                                            {{ $jamu->nilai_khasiat }}/100
                                         </div>
                                     </div>
                                 </div>
@@ -269,7 +269,7 @@
                             </div>
                             <div class="col-6 mb-3">
                                 <div class="stat-item">
-                                    <h3 class="text-success mb-1">{{ $jamu->nilai_khasiat }}/10</h3>
+                                    <h3 class="text-success mb-1">{{ $jamu->nilai_khasiat }}/100</h3>
                                     <small class="text-muted">Rating Khasiat</small>
                                 </div>
                             </div>

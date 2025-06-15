@@ -191,7 +191,7 @@
             <div class="col-lg-4">
                 <!-- Table of Contents (if content is long) -->
                 @if (strlen($article->content) > 1000)
-                    <div class="card sticky-top mb-4 border-0 shadow-sm" style="top: 20px;">
+                    <div class="card mb-4 border-0 shadow-sm">
                         <div class="card-header bg-primary text-white">
                             <h5 class="mb-0">
                                 <i class="fas fa-list me-2"></i>

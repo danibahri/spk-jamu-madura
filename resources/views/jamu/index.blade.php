@@ -290,7 +290,7 @@
                                                             style="width: {{ $jamu->nilai_kandungan * 10 }}%"></div>
                                                     </div>
                                                     <small
-                                                        class="text-muted fw-bold">{{ number_format($jamu->nilai_kandungan, 1) }}/10</small>
+                                                        class="text-muted fw-bold">{{ number_format($jamu->nilai_kandungan, 1) }}/100</small>
                                                     <div><small class="text-muted">Kandungan</small></div>
                                                 </div>
                                             </div>
@@ -301,7 +301,7 @@
                                                             style="width: {{ $jamu->nilai_khasiat * 10 }}%"></div>
                                                     </div>
                                                     <small
-                                                        class="text-muted fw-bold">{{ number_format($jamu->nilai_khasiat, 1) }}/10</small>
+                                                        class="text-muted fw-bold">{{ number_format($jamu->nilai_khasiat, 1) }}/100</small>
                                                     <div><small class="text-muted">Khasiat</small></div>
                                                 </div>
                                             </div>
