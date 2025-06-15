@@ -112,18 +112,32 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if ($history->filters_applied)
+                                            {{-- 
+                                            Langkah 1: Cek apakah variabel $history->filters_applied tidak kosong 
+                                                        DAN merupakan sebuah array. Ini adalah pengaman ganda.
+                                            --}}
+                                            @if (!empty($history->filters_applied) && is_array($history->filters_applied))
                                                 <div class="small">
-                                                    @foreach (json_decode($history->filters_applied, true) as $key => $value)
+                                                    {{-- 
+                                                    Langkah 2: Langsung lakukan perulangan (foreach) tanpa json_decode()
+                                                                karena kita sudah pastikan datanya adalah array.
+                                                    --}}
+                                                    @foreach ($history->filters_applied as $key => $value)
+                                                        {{-- Pengecekan internal Anda untuk filter yang tidak ingin ditampilkan --}}
                                                         @if ($value && !in_array($key, ['_token', 'page', 'search']))
                                                             <span class="badge bg-light text-dark me-1">
                                                                 {{ $key }}:
+                                                                {{-- Menangani jika nilai filter itu sendiri adalah sebuah array --}}
                                                                 {{ is_array($value) ? implode(', ', $value) : $value }}
                                                             </span>
                                                         @endif
                                                     @endforeach
                                                 </div>
                                             @else
+                                                {{-- 
+                                            Jika data kosong, NULL, atau bukan array, tampilkan pesan ini.
+                                            Ini mencegah error "foreach() argument must be of type array|object, string given".
+                                            --}}
                                                 <span class="text-muted small">Tidak ada filter</span>
                                             @endif
                                         </td>
